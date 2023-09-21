@@ -81,6 +81,29 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
   }
+  // Function to show the country selection bottom sheet
+  void showCountrySelectionSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return ListView.builder(
+          itemCount: countries.length,
+          itemBuilder: (context, index) {
+            final country = countries[index];
+            return ListTile(
+              title: Text('${country.flag}  ${country.name}  ${country.dialCode}'),
+              onTap: () {
+                setState(() {
+                  selectedCountry = country;
+                });
+                Navigator.pop(context);
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,44 +147,42 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 20),
           Row(
             children: [
-              DropdownButton<CountryDetails>(
-                value: selectedCountry,
-                items: countries.map<DropdownMenuItem<CountryDetails>>(
-                  (CountryDetails country) {
-                    return DropdownMenuItem<CountryDetails>(
-                      value: country,
-                      child: Row(
-                        children: [
-                          Text(country.flag),
-                          SizedBox(width: 3),
-                          Text(
-                            '${country.name.length <= 8 ? country.name : country.name.substring(0, 8)} ',
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ).toList(),
-                onChanged: (CountryDetails? newValue) {
-                  setState(() {
-                    selectedCountry = newValue;
-                  });
-                },
-              ),
-              SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  controller: phoneNumberController,
-                  onChanged: (value) {
-                    // Check phone number length and navigate if it's 10 digits
-                    checkPhoneNumber();
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    prefix: Text('${selectedCountry?.dialCode ?? ''} '),
-                  ),
-                  keyboardType: TextInputType.phone,
-                  maxLength: 10,
+              Container(
+                 padding: EdgeInsets.all(8.0), // Add padding around the GestureDetector
+  decoration: BoxDecoration(
+    border: Border.all(
+      color: Colors.grey, // You can change the color
+      width: 1.0, // You can change the border width
+    ),
+    borderRadius: BorderRadius.circular(5.0), // You can adjust the border radius
+  ),
+  child: GestureDetector(
+    onTap: showCountrySelectionSheet,
+    child: Row(
+      children: [
+        Text(selectedCountry?.flag ?? ''),
+        SizedBox(width: 3),
+        Text(
+          ' ${selectedCountry?.dialCode}',
+        ),
+      ],
+    ),
+  ),
+),
+                SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: phoneNumberController,
+                    onChanged: (value) {
+                      // Check phone number length and navigate if it's 10 digits
+                      checkPhoneNumber();
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                      prefix: Text('${selectedCountry?.dialCode ?? ''} '),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    maxLength: 10,
                 ),
               ),
             ],
