@@ -118,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Center(
             child: Text(
-              'eCommerce App',
+              'Urban Company',
               style: TextStyle(
                 fontSize: 27,
                 fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 12),
           Center(
             child: Text(
-              'Spring Time Software Solutions Pvt. Ltd.',
+              'Your Home Services Expert',
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
