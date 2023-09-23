@@ -20,7 +20,8 @@ class _NavigationBarPage1State extends State<NavigationBarPage1> {
   String searchText = '';
   List<String> categories = [];
   List<Map<String, dynamic>> advertisementData = [];
- List<Map<String, dynamic>> demoButtonData = []; 
+
+   List<Map<String, dynamic>> demoButtonData = []; // New variable for demo buttons
 PageController _adController = PageController();
 // ignore: unused_field
 late Timer _adTimer;
@@ -37,25 +38,28 @@ Future<void> fetchAndSetCategories() async {
     _startRotatingAdvertisements();
     _adTimer = Timer.periodic(const Duration(seconds: 6), _changeAdvertisement);
 
-    // Fetch company info and slider home page data
+    // Fetch company info first
     fetchCompanyInfo().then((_) {
+      // After fetching company info, fetch slider home page data for advertisements
       fetchSliderHomePage('1').then((data) {
         setState(() {
           advertisementData = data;
           advertisements = data.map((item) => item['ProductImage'] as String).toList();
         });
-        
       }).catchError((error) {
         print('Error fetching slider home page: $error');
       });
-    fetchSliderHomePage('2').then((data) {
+
+      // After fetching company info, fetch slider home page data for demo buttons
+      fetchSliderHomePage('2').then((data) {
         setState(() {
           demoButtonData = data;
         });
       }).catchError((error) {
         print('Error fetching demo button data: $error');
       });
-      }).catchError((error) {
+
+    }).catchError((error) {
       print('Error fetching company info: $error');
     });
 
@@ -65,26 +69,9 @@ Future<void> fetchAndSetCategories() async {
     });
   }
  void _showDemoButtonInfo(int index) {
-  Map<String, dynamic> data = demoButtonData[index];
-  showModalBottomSheet(
-    context: context,
-    builder: (context) {
-      return Container(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _infoButton('Book Name: ${data['BookName']}'),
-            _infoButton('Publisher: ${data['Publisher']}'),
-            _infoButton('Author: ${data['Author']}'),
-            _infoButton('Price: ${data['SalePrice']}'),
-            // Add more fields here
-          ],
-        ),
-      );
-    },
-  );
+  _showInfo(index);  // Reuse the _showInfo method
 }
+
 void _changeAdvertisement(Timer timer) {
   if (_adController.hasClients) {
     final currentPage = _adController.page ?? 0;
@@ -206,7 +193,7 @@ Widget _infoButton(String text) {
           // Rotating Advertisements
          
           // Grid View with Filtered Items
-          Container(
+         Container(
           height: 300,
           child: demoButtonData.length > 6
               ? ListView.builder(
@@ -215,7 +202,7 @@ Widget _infoButton(String text) {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () => _showDemoButtonInfo(index),
-                      child: _buildButton2(
+                      child: _buildButton(
                         demoButtonData[index]['BookName'],
                         demoButtonData[index]['ProductImage'],
                       ),
@@ -231,7 +218,7 @@ Widget _infoButton(String text) {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () => _showDemoButtonInfo(index),
-                      child: _buildButton2(
+                      child: _buildButton(
                         demoButtonData[index]['BookName'],
                         demoButtonData[index]['ProductImage'],
                       ),
@@ -239,22 +226,6 @@ Widget _infoButton(String text) {
                   },
                 ),
         ),
-          SizedBox(
-  height: 400,
-  child: PageView.builder(
-    controller: _adController,
-    itemCount: advertisements.length,
-    itemBuilder: (context, index) {
-      return GestureDetector(
-        onTap: () => _showInfo(index),
-        child: Image.network(
-          advertisements[index],
-          fit: BoxFit.cover,
-        ),
-      );
-    },
-  ),
-),
           // Horizontal Scrolling Buttons
           // Horizontal Scrolling Buttons in Two Rows
 // Horizontal Scrolling Buttons in Two Rows
@@ -288,24 +259,6 @@ SizedBox(
   }
 
   Widget _buildButton(String buttonText, String imagePath) {
-  return Column(
-    children: [
-      IconButton(
-        icon: Image.asset(imagePath),
-        iconSize: 50.0, // Increase the icon size
-        onPressed: () {
-          // Add button functionality here
-        },
-      ),
-      Text(
-        buttonText,
-        style: TextStyle(fontSize: 18.0), // Increase the text size
-      ),
-    ],
-  );
-}
-
-Widget _buildButton2(String buttonText, String imagePath) {
   return Container(
     constraints: BoxConstraints(
       maxWidth: 100,  // Set maximum width
