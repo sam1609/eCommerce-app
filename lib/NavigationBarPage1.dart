@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'NavigationBarPage5.dart';
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'API.dart';
@@ -22,6 +23,14 @@ class _NavigationBarPage1State extends State<NavigationBarPage1> {
   List<Map<String, dynamic>> advertisementData = [];
  List<Map<String, dynamic>> demoButtonData = []; 
 PageController _adController = PageController();
+List<String> demoItems = [
+    'Demo 1',
+    'Demo 2',
+    'Demo 3',
+    'Demo 4',
+    'Demo 5',
+    'Demo 6',
+  ];
 // ignore: unused_field
 late Timer _adTimer;
   List<String> advertisements = [];
@@ -74,6 +83,7 @@ Future<void> fetchAndSetCategories() async {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _infoButton('Product ID: ${data['ProductId']}'),
             _infoButton('Book Name: ${data['BookName']}'),
             _infoButton('Publisher: ${data['Publisher']}'),
             _infoButton('Author: ${data['Author']}'),
@@ -94,25 +104,89 @@ void _changeAdvertisement(Timer timer) {
 }
 void _showInfo(int index) {
   Map<String, dynamic> data = advertisementData[index];
+  int quantity = 1; // Initialize quantity to 0
+
   showModalBottomSheet(
     context: context,
     builder: (context) {
-      return Container(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _infoButton('Book Name: ${data['BookName']}'),
-            _infoButton('Publisher: ${data['Publisher']}'),
-            _infoButton('Author: ${data['Author']}'),
-            _infoButton('Price: ${data['SalePrice']}'),
-            // Add more fields here
-          ],
-        ),
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _infoButton('Product ID: ${data['ProductId']}'),
+                _infoButton('Book Name: ${data['BookName']}'),
+                _infoButton('Publisher: ${data['Publisher']}'),
+                _infoButton('Author: ${data['Author']}'),
+                _infoButton('Price: ${data['SalePrice']}'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.remove),
+                          onPressed: () {
+                            setState(() {
+                              if (quantity > 0) {
+                                quantity--;
+                              }
+                            });
+                          },
+                        ),
+                        Text('Quantity: $quantity'),
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            setState(() {
+                              quantity++;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if(quantity!=0) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => NavigationBarPage5(
+                            title: 'Cart',
+                            productData: data,
+                            quantity: quantity,
+                          ),
+                        ));
+                        }
+                         //Navigator.pop(context); // Close the modal
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => NavigationBarPage5(title: 'Cart'),
+                        //   ),
+                        // );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: quantity > 0 ? Colors.blue: Colors.white,
+                      ),
+                      child: Text(
+                        'Add to Cart',
+                        style: TextStyle(
+                          color: quantity > 0 ?  Colors.white:Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
       );
     },
   );
 }
+
 Widget _infoButton(String text) {
   return Container(
     margin: EdgeInsets.symmetric(vertical: 5),
@@ -206,8 +280,11 @@ Widget _infoButton(String text) {
           // Rotating Advertisements
          
           // Grid View with Filtered Items
+          Padding(
+  padding: const EdgeInsets.all(16.0), // Add the desired padding values
+  child:
           Container(
-          height: 300,
+          height: 330,
           child: demoButtonData.length > 6
               ? ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -238,7 +315,34 @@ Widget _infoButton(String text) {
                     );
                   },
                 ),
+        ),),
+  Container(
+            height: 300,
+            child: GestureDetector(
+  onTap: () {
+    // Prepare the list of items for Demo 1 (replace with your data)
+    List<String> demo1Items = [
+      "Item 1",
+      "Item 2",
+      "Item 3",
+      // Add more items as needed
+    ];
+
+    // Navigate to the content page with Demo 1 data
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DemoContentPage(
+          category: "Demo 1",
+          items: demo1Items,
         ),
+      ),
+    );
+  },
+  child: _buildButton("Demo 1", 'assets/demo1.png'),
+),
+            ),
+     
           SizedBox(
   height: 400,
   child: PageView.builder(
@@ -334,3 +438,29 @@ Widget _buildButton2(String buttonText, String imagePath) {
     ),
   );
 }}
+
+class DemoContentPage extends StatelessWidget {
+  final String category;
+  final List<String> items;
+
+  DemoContentPage({required this.category, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(category),
+      ),
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final item = items[index];
+          // Build your content here based on 'item'
+          return ListTile(
+            title: Text(item),
+          );
+        },
+      ),
+    );
+  }
+}

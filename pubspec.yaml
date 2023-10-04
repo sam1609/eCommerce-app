@@ -22,13 +22,15 @@ environment:
   sdk: '>=3.1.2 <4.0.0'
 
 dependencies:
+  firebase_auth: ^4.10.0
+  firebase_core: ^2.16.0
   flutter:
     sdk: flutter
   country_codes: ^2.0.1
-  location: ^5.0.3
+  location: ^5.0.3 
   google_maps_flutter: ^2.2.1
   http: ^0.13.3
-  
+  shared_preferences: ^2.2.1
 
 dev_dependencies:
   flutter_test:
