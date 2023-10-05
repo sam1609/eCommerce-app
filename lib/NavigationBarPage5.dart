@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:provider/provider.dart';
 class NavigationBarPage5 extends StatefulWidget {
   final String title;
   final Map<String, dynamic>? productData;
@@ -133,22 +134,88 @@ void initState() {
     );
   }
 }
+
+class CartItemList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CartModel>(
+      builder: (context, cart, child) {
+        return ListView.builder(
+          itemCount: cart.cartItems.length,
+          itemBuilder: (context, index) {
+            final cartItem = cart.cartItems[index];
+            return CartItemWidget(
+              itemName: cartItem.productData['BookName'],
+              quantity: cartItem.quantity,
+              price: cartItem.productData['SalePrice'],
+              onRemove: () {
+                cart.removeItem(index);
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class CartModel with ChangeNotifier {
+  List<CartItem> _cartItems = [];
+
+  List<CartItem> get cartItems => _cartItems;
+
+  Future<void> loadCartData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cartData = prefs.getStringList('cart');
+    if (cartData != null) {
+      _cartItems = cartData
+          .map((item) => CartItem.fromSharedPreferences(item))
+          .toList();
+      notifyListeners();
+    }
+  }
+
+  Future<void> saveCartData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cartData =
+        _cartItems.map((item) => item.toSharedPreferences()).toList();
+    await prefs.setStringList('cart', cartData);
+  }
+
+  void addToCart(Map<String, dynamic>? productData, int? quantity) {
+    if (productData == null || quantity == null) {
+      return;
+    }
+    _cartItems.add(CartItem(productData: productData, quantity: quantity));
+    saveCartData();
+    notifyListeners();
+  }
+
+  void removeItem(int index) {
+    _cartItems.removeAt(index);
+    saveCartData();
+    notifyListeners();
+  }
+}
+
 class CartItem {
   final Map<String, dynamic> productData;
   final int quantity;
 
   CartItem({required this.productData, required this.quantity});
-   // Deserialize a CartItem from SharedPreferences
+
   factory CartItem.fromSharedPreferences(String item) {
     final parts = item.split(',');
     final productData = json.decode(parts[0]);
     final quantity = int.parse(parts[1]);
-    return CartItem(productData: productData, quantity: quantity);}
-     // Serialize a CartItem to a string for SharedPreferences
+    return CartItem(productData: productData, quantity: quantity);
+  }
+
   String toSharedPreferences() {
     final productDataString = json.encode(productData);
     return '$productDataString,$quantity';
-}}
+  }
+}
 
 class CartItemWidget extends StatelessWidget {
   final String itemName;

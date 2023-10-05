@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'homepage.dart';
-
+import 'package:provider/provider.dart';
+import 'NavigationBarPage5.dart';
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => CartModel(),
+      child: MyApp(),
+    ),
+  );
 }
-
 class CountryDetails {
   final String name;
   final String flag;
