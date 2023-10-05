@@ -21,16 +21,15 @@ class _NavigationBarPage1State extends State<NavigationBarPage1> {
   String searchText = '';
   List<String> categories = [];
   List<Map<String, dynamic>> advertisementData = [];
- List<Map<String, dynamic>> demoButtonData = []; 
+ List<Map<String, dynamic>> demoButtonData2 = []; 
+//  List<Map<String, dynamic>> demoButtonData2 = []; 
+ List<Map<String, dynamic>> demoButtonData3 = []; 
+ List<Map<String, dynamic>> demoButtonData4 = []; 
+ List<Map<String, dynamic>> demoButtonData5 = []; 
+ List<Map<String, dynamic>> demoButtonData6 = [];
+ List<Map<String, dynamic>> demoButtonData8 = [];  
 PageController _adController = PageController();
-List<String> demoItems = [
-    'Demo 1',
-    'Demo 2',
-    'Demo 3',
-    'Demo 4',
-    'Demo 5',
-    'Demo 6',
-  ];
+
 // ignore: unused_field
 late Timer _adTimer;
   List<String> advertisements = [];
@@ -59,7 +58,42 @@ Future<void> fetchAndSetCategories() async {
       });
     fetchSliderHomePage('2').then((data) {
         setState(() {
-          demoButtonData = data;
+          demoButtonData2 = data;
+        });
+      }).catchError((error) {
+        print('Error fetching demo button data: $error');
+      });
+      fetchSliderHomePage('3').then((data) {
+        setState(() {
+          demoButtonData3 = data;
+        });
+      }).catchError((error) {
+        print('Error fetching demo button data: $error');
+      });
+      fetchSliderHomePage('4').then((data) {
+        setState(() {
+          demoButtonData4 = data;
+        });
+      }).catchError((error) {
+        print('Error fetching demo button data: $error');
+      });
+      fetchSliderHomePage('5').then((data) {
+        setState(() {
+          demoButtonData5 = data;
+        });
+      }).catchError((error) {
+        print('Error fetching demo button data: $error');
+      });
+      fetchSliderHomePage('6').then((data) {
+        setState(() {
+          demoButtonData6 = data;
+        });
+      }).catchError((error) {
+        print('Error fetching demo button data: $error');
+      });
+      fetchSliderHomePage('8').then((data) {
+        setState(() {
+          demoButtonData8 = data;
         });
       }).catchError((error) {
         print('Error fetching demo button data: $error');
@@ -73,28 +107,52 @@ Future<void> fetchAndSetCategories() async {
       print('Error fetching categories: $error');
     });
   }
- void _showDemoButtonInfo(int index) {
-  Map<String, dynamic> data = demoButtonData[index];
-  showModalBottomSheet(
-    context: context,
-    builder: (context) {
-      return Container(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _infoButton('Product ID: ${data['ProductId']}'),
-            _infoButton('Book Name: ${data['BookName']}'),
-            _infoButton('Publisher: ${data['Publisher']}'),
-            _infoButton('Author: ${data['Author']}'),
-            _infoButton('Price: ${data['SalePrice']}'),
-            // Add more fields here
-          ],
-        ),
-      );
-    },
-  );
-}
+ void _showDemoButtonInfo() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BooksListPage(bookData: demoButtonData2),
+      ),
+    );
+  }
+// void _showDemoButtonInfo2() {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//         builder: (context) => BooksListPage(bookData: advertisementData),
+//       ),
+//     );
+//   }
+  void _showDemoButtonInfo3() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BooksListPage(bookData: demoButtonData3),
+      ),
+    );
+  }void _showDemoButtonInfo4() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BooksListPage(bookData: demoButtonData4),
+      ),
+    );
+  }void _showDemoButtonInfo5() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BooksListPage(bookData: demoButtonData5),
+      ),
+    );
+  }void _showDemoButtonInfo6() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BooksListPage(bookData: demoButtonData6),
+      ),
+    );
+  }void _showDemoButtonInfo8() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BooksListPage(bookData: demoButtonData8),
+      ),
+    );
+  }
+
 void _changeAdvertisement(Timer timer) {
   if (_adController.hasClients) {
     final currentPage = _adController.page ?? 0;
@@ -280,71 +338,76 @@ Widget _infoButton(String text) {
           // Rotating Advertisements
          
           // Grid View with Filtered Items
-          Padding(
-  padding: const EdgeInsets.all(16.0), // Add the desired padding values
-  child:
-          Container(
-          height: 330,
-          child: demoButtonData.length > 6
-              ? ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: demoButtonData.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => _showDemoButtonInfo(index),
-                      child: _buildButton2(
-                        demoButtonData[index]['BookName'],
-                        demoButtonData[index]['ProductImage'],
-                      ),
-                    );
-                  },
-                )
-              : GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                  ),
-                  itemCount: demoButtonData.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => _showDemoButtonInfo(index),
-                      child: _buildButton2(
-                        demoButtonData[index]['BookName'],
-                        demoButtonData[index]['ProductImage'],
-                      ),
-                    );
-                  },
-                ),
-        ),),
-  Container(
-            height: 300,
-            child: GestureDetector(
-  onTap: () {
-    // Prepare the list of items for Demo 1 (replace with your data)
-    List<String> demo1Items = [
-      "Item 1",
-      "Item 2",
-      "Item 3",
-      // Add more items as needed
-    ];
-
-    // Navigate to the content page with Demo 1 data
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DemoContentPage(
-          category: "Demo 1",
-          items: demo1Items,
+  //         Padding(
+  // padding: const EdgeInsets.all(16.0), // Add the desired padding values
+  // child:
+  //         Container(
+  //         height: 330,
+  //         child: demoButtonData.length > 6
+  //             ? ListView.builder(
+  //                 scrollDirection: Axis.horizontal,
+  //                 itemCount: demoButtonData.length,
+  //                 itemBuilder: (context, index) {
+  //                   return GestureDetector(
+  //                     onTap: () => _showDemoButtonInfo(index),
+  //                     child: _buildButton2(
+  //                       demoButtonData[index]['BookName'],
+  //                       demoButtonData[index]['ProductImage'],
+  //                     ),
+  //                   );
+  //                 },
+  //               )
+  //             : GridView.builder(
+  //                 physics: NeverScrollableScrollPhysics(),
+  //                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //                   crossAxisCount: 3,
+  //                 ),
+  //                 itemCount: demoButtonData.length,
+  //                 itemBuilder: (context, index) {
+  //                   return GestureDetector(
+  //                     onTap: () => _showDemoButtonInfo(index),
+  //                     child: _buildButton2(
+  //                       demoButtonData[index]['BookName'],
+  //                       demoButtonData[index]['ProductImage'],
+  //                     ),
+  //                   );
+  //                 },
+  //               ),
+  //       ),),
+       Padding(
+  padding: const EdgeInsets.all(16.0),
+  child: Column(
+    children: [
+      SizedBox(
+        height: 160, // Adjust the height as needed
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Use this to distribute buttons evenly
+          children: [
+            _buildDemoButton('assets/demo1.png', _showDemoButtonInfo),
+            _buildDemoButton('assets/demo2.png', _showDemoButtonInfo3),
+            _buildDemoButton('assets/demo1.png', _showDemoButtonInfo4),
+          ],
         ),
       ),
-    );
-  },
-  child: _buildButton("Demo 1", 'assets/demo1.png'),
+      SizedBox(
+        height: 160, // Adjust the height as needed
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Use this to distribute buttons evenly
+          children: [
+            _buildDemoButton('assets/demo2.png', _showDemoButtonInfo5),
+            _buildDemoButton('assets/demo1.png', _showDemoButtonInfo6),
+            _buildDemoButton('assets/demo2.png', _showDemoButtonInfo8),
+          ],
+        ),
+      ),
+    ],
+  ),
 ),
-            ),
-     
+
+
+
           SizedBox(
-  height: 400,
+  height: 450,
   child: PageView.builder(
     controller: _adController,
     itemCount: advertisements.length,
@@ -437,7 +500,25 @@ Widget _buildButton2(String buttonText, String imagePath) {
       ],
     ),
   );
-}}
+}Widget _buildDemoButton(String imagePath, Function()? onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Column(
+        children: [
+          Container(
+            height: 80,
+            width: 80,
+            child: Image.asset(imagePath),
+          ),
+          Text(
+            'Demo Button',
+            style: TextStyle(fontSize: 14.0),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }}
 
 class DemoContentPage extends StatelessWidget {
   final String category;
@@ -460,6 +541,143 @@ class DemoContentPage extends StatelessWidget {
             title: Text(item),
           );
         },
+      ),
+    );
+  }
+}
+class BooksListPage extends StatelessWidget {
+  final List<Map<String, dynamic>> bookData; // Replace with your actual data
+
+  BooksListPage({required this.bookData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Books List'),
+      ),
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // 2 items in a row
+        ),
+        itemCount: bookData.length,
+        itemBuilder: (context, index) {
+          final book = bookData[index];
+          return GestureDetector(
+            onTap: () => _showBookDetails(context, book),
+            child: Card(
+              child: Column(
+                children: [
+                  Image.network(
+                    book['ProductImage'],
+                    width: 100, // Adjust the image size as needed
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
+                  ListTile(
+                    title: Text(book['BookName']),
+                    // Add other book information here if needed
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showBookDetails(BuildContext context, Map<String, dynamic> book) {
+    int quantity = 1; // Initialize quantity to 1
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _infoButton('Product ID: ${book['ProductId']}'),
+                  _infoButton('Book Name: ${book['BookName']}'),
+                  _infoButton('Publisher: ${book['Publisher']}'),
+                  _infoButton('Author: ${book['Author']}'),
+                  _infoButton('Price: ${book['SalePrice']}'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.remove),
+                            onPressed: () {
+                              setState(() {
+                                if (quantity > 0) {
+                                  quantity--;
+                                }
+                              });
+                            },
+                          ),
+                          Text('Quantity: $quantity'),
+                          IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () {
+                              setState(() {
+                                quantity++;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (quantity != 0) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => NavigationBarPage5(
+                                  title: 'Cart',
+                                  productData: book,
+                                  quantity: quantity,
+                                ),
+                              ),
+                            );
+                          }
+                          Navigator.pop(context); // Close the modal
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: quantity > 0 ? Colors.blue : Colors.white,
+                        ),
+                        child: Text(
+                          'Add to Cart',
+                          style: TextStyle(
+                            color: quantity > 0 ? Colors.white : Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _infoButton(String text) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blueAccent),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 16),
       ),
     );
   }
