@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'package:provider/provider.dart';
+import 'API.dart'; // Import the file containing webGetUserCart function
+import 'dart:async'; // Import to work with Futures
+import 'package:flutter/widgets.dart'; // Import to use Image widget
+
 class NavigationBarPage5 extends StatefulWidget {
   final String title;
   final Map<String, dynamic>? productData;
@@ -19,44 +20,48 @@ class NavigationBarPage5 extends StatefulWidget {
 }
 
 class _NavigationBarPage5State extends State<NavigationBarPage5> {
-  List<CartItem> cartItems = [];
+  List<Map<String, dynamic>>? cartData;
 
- @override
-void initState() {
-  super.initState();
-  _loadCartData();
-  // Check if productData and quantity are not null before adding to the cart
-  if (widget.productData != null && widget.quantity != null) {
-    addToCart(widget.productData!, widget.quantity!);
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserCart();
   }
-}
- Future<void> _loadCartData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cartData = prefs.getStringList('cart');
-    if (cartData != null) {
+
+  Future<void> _fetchUserCart() async {
+    try {
+      final cart = await webGetUserCart(); // Call the API function
       setState(() {
-        cartItems = cartData
-            .map((item) => CartItem.fromSharedPreferences(item))
-            .toList();
+        cartData = cart;
       });
+    } catch (e) {
+      // Handle the error here (e.g., show an error message)
+      print('Error fetching cart data: $e');
     }
   }
 
-  // Function to save cart data to SharedPreferences
-  Future<void> _saveCartData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cartData = cartItems.map((item) => item.toSharedPreferences()).toList();
-    await prefs.setStringList('cart', cartData);
+  double calculateTotalAmount() {
+    // Calculate your total amount based on cartData here
+    double totalAmount = 0;
+    if (cartData != null) {
+      for (var item in cartData!) {
+        if (item['Qty'] > 0) {
+          // Include the item's price in the total amount calculation
+          totalAmount += (item['Qty'] * (item['ItemDiscountedPrice'] ?? 0));
+        }
+      }
+    }
+    return totalAmount;
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: null,
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
-          Row(
+          const Row(
             children: [
               Icon(Icons.shopping_cart),
               SizedBox(width: 8.0),
@@ -66,182 +71,167 @@ void initState() {
               ),
             ],
           ),
-
-          // Conditionally display the message if cart is empty
-          cartItems.isEmpty
-              ? Center(
-                  child: Text(
-                    'Add items to cart',
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: cartItems.map((item) {
-                    return CartItemWidget(
-                      itemName: item.productData['BookName'],
-                      quantity: item.quantity,
-                      price: item.productData['SalePrice'],
-                      onRemove: () {
-                        // Remove item from cart when "Remove" button is pressed
-                        setState(() {
-                          cartItems.remove(item);
-                        });
-                      },
-                    );
-                  }).toList(),
-                ),
-        ],
-      ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     _showItemAddedPopup(); // Show pop-up when FAB is pressed
-      //   },
-      //   child: Icon(Icons.add),
-      // ),
-    );
-  }
-
- void addToCart(Map<String, dynamic>? productData, int? quantity) {
-    // Check if productData is null, and return early if it is
-    if (productData == null || quantity == null) {
-      return;
-    }
-    setState(() {
-      cartItems.add(CartItem(productData: productData, quantity: quantity));
-    });
-    // Save the updated cart data
-    _saveCartData();
-  }
-  // Function to show a pop-up message when an item is added
-  void _showItemAddedPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Item Added Successfully'),
-          content: Text('The item has been added to your cart.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the pop-up
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class CartItemList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<CartModel>(
-      builder: (context, cart, child) {
-        return ListView.builder(
-          itemCount: cart.cartItems.length,
-          itemBuilder: (context, index) {
-            final cartItem = cart.cartItems[index];
-            return CartItemWidget(
-              itemName: cartItem.productData['BookName'],
-              quantity: cartItem.quantity,
-              price: cartItem.productData['SalePrice'],
-              onRemove: () {
-                cart.removeItem(index);
-              },
+          if (cartData != null)
+  for (var item in cartData!)
+    if (item['Qty'] > 0)
+      Dismissible(
+        key: UniqueKey(),
+        direction: DismissDirection.endToStart,
+        onDismissed: (direction) async {
+          try {
+            // Call the delete function here
+            await webDeleteUserCartandItem(
+              item['ProductID'],
+              'WEB_139',
+              item['CartID'].toString(),
             );
-          },
-        );
-      },
-    );
-  }
-}
-
-class CartModel with ChangeNotifier {
-  List<CartItem> _cartItems = [];
-
-  List<CartItem> get cartItems => _cartItems;
-
-  Future<void> loadCartData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cartData = prefs.getStringList('cart');
-    if (cartData != null) {
-      _cartItems = cartData
-          .map((item) => CartItem.fromSharedPreferences(item))
-          .toList();
-      notifyListeners();
-    }
-  }
-
-  Future<void> saveCartData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cartData =
-        _cartItems.map((item) => item.toSharedPreferences()).toList();
-    await prefs.setStringList('cart', cartData);
-  }
-
-  void addToCart(Map<String, dynamic>? productData, int? quantity) {
-    if (productData == null || quantity == null) {
-      return;
-    }
-    _cartItems.add(CartItem(productData: productData, quantity: quantity));
-    saveCartData();
-    notifyListeners();
-  }
-
-  void removeItem(int index) {
-    _cartItems.removeAt(index);
-    saveCartData();
-    notifyListeners();
-  }
-}
-
-class CartItem {
-  final Map<String, dynamic> productData;
-  final int quantity;
-
-  CartItem({required this.productData, required this.quantity});
-
-  factory CartItem.fromSharedPreferences(String item) {
-    final parts = item.split(',');
-    final productData = json.decode(parts[0]);
-    final quantity = int.parse(parts[1]);
-    return CartItem(productData: productData, quantity: quantity);
-  }
-
-  String toSharedPreferences() {
-    final productDataString = json.encode(productData);
-    return '$productDataString,$quantity';
-  }
-}
-
-class CartItemWidget extends StatelessWidget {
-  final String itemName;
-  final int quantity;
-  final double price;
-  final VoidCallback onRemove;
-
-  CartItemWidget({
-    required this.itemName,
-    required this.quantity,
-    required this.price,
-    required this.onRemove,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(itemName),
-      subtitle: Text('Quantity: $quantity'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Price: \$${price.toStringAsFixed(2)}'),
-          ElevatedButton(
-            onPressed: onRemove,
-            child: Text('Remove'),
+            print('Item Deleted Successfully: ${item['ProductID']}');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Item Deleted Successfully From Cart'),
+              ),
+            );
+          } catch (e) {
+            print('Error deleting item: $e');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to delete item from cart'),
+              ),
+            );
+          }
+        },
+                background: Container(
+                  color: Colors.red,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                ),
+                child: 
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                  margin: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: item['ImagePath'] != null &&
+                                item['ImagePath'].isNotEmpty
+                            ? Image.network(
+                                item['ImagePath'],
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              )
+                            : const Center(
+                                child: Text('Image not Found'),
+                              ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(item['BookName'] ?? 'No Book Name'),
+                            Text('Author: ${item['AuthorName'] ?? 'No Author'}'),
+                            RichText(
+                              text: TextSpan(
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: 'Price: ',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '${item['SaleCurrency'] ?? 'No Currency'} ${item['Price'] ?? 'No Price'}',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' -${item['DiscountPer'] ?? 'No Discount'}%',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        ' ${item['SaleCurrency'] ?? 'No Currency'}${item['ItemDiscountedPrice'] ?? 'No Discounted Price'}',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text('Quantity: ${item['Qty'] ?? 'No Quantity'}'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ))
+              else
+                Container(), // Return an empty container if Qty is 0
+          Container(
+            margin: EdgeInsets.only(top: 16.0),
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Total Amount:',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text('${cartData?[1]['BeforeShipCostNetAmt']}',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  '+${cartData?[1]['ShipCost']}(Shipping)', // Replace with the actual ship cost
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                  ),
+                ),
+                Row( crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                Text(
+                  'NetAmount: ${cartData?[1]['NetAmount']}', // Replace with the actual net amount
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white,
+                  ),
+                ),
+                 Text(
+                  ' (payable)', 
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                  ),
+                ),])
+              ],
+            ),
           ),
         ],
       ),

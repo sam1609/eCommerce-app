@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'NavigationBarPage5.dart';
+// import 'NavigationBarPage5.dart';
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'API.dart';
@@ -206,24 +206,37 @@ void _showInfo(int index) {
                       ],
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        if(quantity!=0) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NavigationBarPage5(
-                            title: 'Cart',
-                            productData: data,
-                            quantity: quantity,
-                          ),
-                        ));
-                        }
-                         //Navigator.pop(context); // Close the modal
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => NavigationBarPage5(title: 'Cart'),
-                        //   ),
-                        // );
-                      },
+                      onPressed: () async {
+    if (quantity > 0) {
+      try {
+        final result = await webInsertUserCart(data['ProductId'], quantity.toString());
+        // Check the result and provide user feedback if needed
+      if (result.isNotEmpty) {
+  // Show a SnackBar at the top right of the screen
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(result[0]['Result']),
+      duration: Duration(seconds: 2),
+      behavior: SnackBarBehavior.floating, // Set behavior to floating
+      margin: EdgeInsets.only(top: 16.0, right: 16.0), // Adjust margin
+    ),
+  );
+
+  print('look here : ${result[0]['Result']}');
+}
+ else {
+          // Handle the case where the API call was successful, but the item was not added
+          print('Item not added to the cart. Check the response.');
+        }
+      } catch (e) {
+        // Handle any errors that occur during the API call
+        print('Error adding item to cart: $e');
+        // print('here is the product id: ${data['ProductId']}');
+        // print('here is the quantity : $quantity');
+      }
+    }
+    Navigator.pop(context); // Close the modal
+  },
                       style: ElevatedButton.styleFrom(
                         primary: quantity > 0 ? Colors.blue: Colors.white,
                       ),
@@ -632,30 +645,49 @@ class BooksListPage extends StatelessWidget {
                         ],
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          if (quantity != 0) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => NavigationBarPage5(
-                                  title: 'Cart',
-                                  productData: book,
-                                  quantity: quantity,
-                                ),
-                              ),
-                            );
-                          }
-                          Navigator.pop(context); // Close the modal
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: quantity > 0 ? Colors.blue : Colors.white,
-                        ),
-                        child: Text(
-                          'Add to Cart',
-                          style: TextStyle(
-                            color: quantity > 0 ? Colors.white : Colors.blue,
-                          ),
-                        ),
-                      ),
+  onPressed: () async {
+    if (quantity > 0) {
+      try {
+        final result = await webInsertUserCart(book['ProductId'], quantity.toString());
+        // Check the result and provide user feedback if needed
+      if (result.isNotEmpty) {
+  // Show a SnackBar at the top right of the screen
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(result[0]['Result']),
+      duration: Duration(seconds: 2),
+      behavior: SnackBarBehavior.floating, // Set behavior to floating
+      margin: EdgeInsets.only(top: 16.0, right: 16.0), // Adjust margin
+    ),
+  );
+
+  print('look here : ${result[0]['Result']}');
+}
+ else {
+          // Handle the case where the API call was successful, but the item was not added
+          print('Item not added to the cart. Check the response.');
+        }
+      } catch (e) {
+        // Handle any errors that occur during the API call
+        print('Error adding item to cart: $e');
+        
+        print('here is the product id: ${book['ProductId']}');
+        print('here is the quantity : $quantity');
+      }
+    }
+    Navigator.pop(context); // Close the modal
+  },
+  style: ElevatedButton.styleFrom(
+    primary: quantity > 0 ? Colors.blue : Colors.white,
+  ),
+  child: Text(
+    'Add to Cart',
+    style: TextStyle(
+      color: quantity > 0 ? Colors.white : Colors.blue,
+    ),
+  ),
+),
+
                     ],
                   ),
                 ],

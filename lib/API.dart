@@ -45,7 +45,7 @@ Future<void> fetchCompanyInfo() async {
     signupvia=data['SignUpVia'].toString();
      companyname=data['CompanyName'].toString();
         financialperiod=data['FinancialPeriod'].toString();
-        print('The output is : $companyid$branchid$signupvia$companyname$financialperiod');
+        // print('The output is : $companyid$branchid$signupvia$companyname$financialperiod');
   } else {
     throw Exception('Failed to fetch data');
   }
@@ -53,9 +53,9 @@ Future<void> fetchCompanyInfo() async {
 // ignore: non_constant_identifier_names
 Future<List<Map<String, dynamic>>> fetchSliderHomePage(String sliderseq) async {
   final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebGetSliderHomePage?iCompanyID=${companyid.toString()}&iBranchID=${branchid.toString()}&accessCode=$accessCode&SLiderSeq=${sliderseq.toString()}';
-  print('Here is company id: $companyid');
-   print('Here is branch id: $branchid');
-   print(accessCode);
+  // print('Here is company id: $companyid');
+  //  print('Here is branch id: $branchid');
+  //  print(accessCode);
   final Uri uri = Uri.parse(apiUrl);
   final response = await http.post(
     uri,
@@ -105,4 +105,63 @@ Future<Map<String, dynamic>> reverseGeocode(double latitude, double longitude) a
     throw Exception('Failed to reverse geocode coordinates');
   }
 }
+
+Future<List<Map<String, dynamic>>> webGetUserCart() async {
+  final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebGetUserCart?iCompanyID=$companyid&iBranchID=$branchid&strOtherCountry=0&strCustomerCode=WEB_139&accessCode=$accessCode';
+  final Uri uri = Uri.parse(apiUrl);
+  // print('Here is final url: $uri');
+  final response = await http.post(
+    uri,
+    headers: {
+      'Authorization': basicAuth,
+    },
+  );
+
+  if (response.statusCode == 200) {
+    return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to fetch data');
+  }
+}
+
+
+Future<List<Map<String, dynamic>>> webInsertUserCart(String bookcode, String bookquantity) async {
+  final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebInsertUserCart?strCustomerCode=WEB_139&strBookCode=$bookcode&strBookQty=$bookquantity&strBookClubID=0&iCompanyID=$companyid&iBranchID=$branchid&accessCode=$accessCode';
+  final Uri uri = Uri.parse(apiUrl);
+  // print('Here is final url: $uri');
+  final response = await http.post(
+    uri,
+    headers: {
+      'Authorization': basicAuth,
+    },
+  );
+
+  if (response.statusCode == 200) {
+    return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to fetch data');
+  }
+}
+
+
+Future<List<Map<String, dynamic>>> webDeleteUserCartandItem(String bookcode, String customercode, String cartid) async {
+  final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebDeleteUserCartandItem?iCompanyID=$companyid&iBranchID=$branchid&strBookCode=$bookcode&strCustomerCode=$customercode&strCartID=$cartid&accessCode=$accessCode';
+  final Uri uri = Uri.parse(apiUrl);
+  // print('Here is final url: $uri');
+  final response = await http.post(
+    uri,
+    headers: {
+      'Authorization': basicAuth,
+    },
+  );
+print('look here fast : $uri');
+  if (response.statusCode == 200) {
+    print('delete initiated');
+    return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to fetch data');
+  }
+}
+
+
 
