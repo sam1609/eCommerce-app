@@ -154,14 +154,36 @@ Future<List<Map<String, dynamic>>> webDeleteUserCartandItem(String bookcode, Str
       'Authorization': basicAuth,
     },
   );
-print('look here fast : $uri');
+// print('look here fast : $uri');
   if (response.statusCode == 200) {
-    print('delete initiated');
+    // print('delete initiated');
     return List<Map<String, dynamic>>.from(jsonDecode(response.body));
   } else {
     throw Exception('Failed to fetch data');
   }
 }
+
+
+
+Future<List<Map<String, dynamic>>> webUpdateUserCart(String bookcode, String customercode, String cartid, String newquantity) async {
+  final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebUpdateUserCart?iCompanyID=$companyid&iBranchID=$branchid&strBookCode=$bookcode&strCustomerCode=$customercode&strCartID=$cartid&strBookQty=$newquantity&accessCode=$accessCode';
+  final Uri uri = Uri.parse(apiUrl);
+  print('Here is final url: $uri');
+  final response = await http.post(
+    uri,
+    headers: {
+      'Authorization': basicAuth,
+    },
+  );
+print('look here fast : $uri');
+  if (response.statusCode == 200) {
+    print('Update initiated');
+    return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to fetch data');
+  }
+}
+
 
 
 
