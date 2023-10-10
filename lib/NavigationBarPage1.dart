@@ -174,11 +174,84 @@ void _showInfo(int index) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _infoButton('Product ID: ${data['ProductId']}'),
-                _infoButton('Book Name: ${data['BookName']}'),
-                _infoButton('Publisher: ${data['Publisher']}'),
-                _infoButton('Author: ${data['Author']}'),
-                _infoButton('Price: ${data['SalePrice']}'),
+                Row(
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Image.network(data['ImagePath'] ?? '', fit: BoxFit.cover),
+                    ),
+                    SizedBox(width: 16.0),
+                    Expanded(
+                      child: Table(
+                        columnWidths: {
+                          0: FlexColumnWidth(1), // Adjust the column widths as needed
+                          1: FlexColumnWidth(2),
+                        },
+                        children: [
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Product ID:')),
+                              TableCell(child: _infoText(data['ProductId'].toString())), // Convert to String
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Book Name:')),
+                              TableCell(child: _infoText(data['BookName'])),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Publisher:')),
+                              TableCell(child: _infoText(data['Publisher'])),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Author:')),
+                              TableCell(child: _infoText(data['Author'])),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Price:')),
+                            TableCell(
+  child: Row(
+    children: [
+      Text(
+        data['SalePrice'].toString(),
+        style: TextStyle(
+          decoration: TextDecoration.lineThrough, // Add strike-through
+        ),
+      ),
+      Text(
+        ' -${data['SaleDiscount'].toString()}% ',
+        style: TextStyle(
+          color: Colors.red,
+        ),
+      ),
+      Text(
+        '${data['SaleCurrency']} ${data['DiscountPrice'].toString()}',
+        style: TextStyle(
+        ),
+      ),
+    ],
+  ),
+),
+
+
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -207,6 +280,7 @@ void _showInfo(int index) {
                     ),
                     ElevatedButton(
                       onPressed: () async {
+                        // Your code for adding to cart here
     if (quantity > 0) {
       try {
         final result = await webInsertUserCart(data['ProductId'], quantity.toString());
@@ -236,19 +310,21 @@ void _showInfo(int index) {
       }
     }
     Navigator.pop(context); // Close the modal
-  },
+                      },
                       style: ElevatedButton.styleFrom(
-                        primary: quantity > 0 ? Colors.blue: Colors.white,
+                        primary: quantity > 0 ? Colors.blue : Colors.white,
                       ),
                       child: Text(
                         'Add to Cart',
                         style: TextStyle(
-                          color: quantity > 0 ?  Colors.white:Colors.blue,
+                          color: quantity > 0 ? Colors.white : Colors.blue,
                         ),
                       ),
                     ),
                   ],
                 ),
+                    const SizedBox(height:100),
+                    const Text('View similar Books: '),
               ],
             ),
           );
@@ -258,20 +334,16 @@ void _showInfo(int index) {
   );
 }
 
-Widget _infoButton(String text) {
-  return Container(
-    margin: EdgeInsets.symmetric(vertical: 5),
-    padding: EdgeInsets.all(10),
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.blueAccent),
-      borderRadius: BorderRadius.circular(12),
-    ),
+Widget _infoText(String text) {
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 5),
     child: Text(
       text,
       style: TextStyle(fontSize: 16),
     ),
   );
 }
+
   void _startRotatingAdvertisements() {
     int currentIndex = 0;
     const duration = Duration(seconds: 3);
@@ -603,49 +675,123 @@ class BooksListPage extends StatelessWidget {
   void _showBookDetails(BuildContext context, Map<String, dynamic> book) {
     int quantity = 1; // Initialize quantity to 1
 
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _infoButton('Product ID: ${book['ProductId']}'),
-                  _infoButton('Book Name: ${book['BookName']}'),
-                  _infoButton('Publisher: ${book['Publisher']}'),
-                  _infoButton('Author: ${book['Author']}'),
-                  _infoButton('Price: ${book['SalePrice']}'),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+     showModalBottomSheet(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Image.network(book['ImagePath'] ?? '', fit: BoxFit.cover),
+                    ),
+                    SizedBox(width: 16.0),
+                    Expanded(
+                      child: Table(
+                        columnWidths: {
+                          0: FlexColumnWidth(1), // Adjust the column widths as needed
+                          1: FlexColumnWidth(2),
+                        },
                         children: [
-                          IconButton(
-                            icon: Icon(Icons.remove),
-                            onPressed: () {
-                              setState(() {
-                                if (quantity > 0) {
-                                  quantity--;
-                                }
-                              });
-                            },
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Product ID:')),
+                              TableCell(child: _infoText(book['ProductId'].toString())), // Convert to String
+                            ],
                           ),
-                          Text('Quantity: $quantity'),
-                          IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              setState(() {
-                                quantity++;
-                              });
-                            },
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Book Name:')),
+                              TableCell(child: _infoText(book['BookName'])),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Publisher:')),
+                              TableCell(child: _infoText(book['Publisher'])),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Author:')),
+                              TableCell(child: _infoText(book['Author'])),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              TableCell(child: _infoText('Price:')),
+                            TableCell(
+  child: Row(
+    children: [
+      Text(
+        book['SalePrice'].toString(),
+        style: TextStyle(
+          decoration: TextDecoration.lineThrough, // Add strike-through
+        ),
+      ),
+      Text(
+        ' -${book['SaleDiscount'].toString()}% ',
+        style: TextStyle(
+          color: Colors.red,
+        ),
+      ),
+      Text(
+        '${book['SaleCurrency']} ${book['DiscountPrice'].toString()}',
+        style: TextStyle(
+        ),
+      ),
+    ],
+  ),
+),
+
+
+                            ],
                           ),
                         ],
                       ),
-                      ElevatedButton(
-  onPressed: () async {
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.remove),
+                          onPressed: () {
+                            setState(() {
+                              if (quantity > 0) {
+                                quantity--;
+                              }
+                            });
+                          },
+                        ),
+                        Text('Quantity: $quantity'),
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            setState(() {
+                              quantity++;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        // Your code for adding to cart here
     if (quantity > 0) {
       try {
         final result = await webInsertUserCart(book['ProductId'], quantity.toString());
@@ -670,47 +816,41 @@ class BooksListPage extends StatelessWidget {
       } catch (e) {
         // Handle any errors that occur during the API call
         print('Error adding item to cart: $e');
-        
-        print('here is the product id: ${book['ProductId']}');
-        print('here is the quantity : $quantity');
+        // print('here is the product id: ${data['ProductId']}');
+        // print('here is the quantity : $quantity');
       }
     }
     Navigator.pop(context); // Close the modal
-  },
-  style: ElevatedButton.styleFrom(
-    primary: quantity > 0 ? Colors.blue : Colors.white,
-  ),
-  child: Text(
-    'Add to Cart',
-    style: TextStyle(
-      color: quantity > 0 ? Colors.white : Colors.blue,
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: quantity > 0 ? Colors.blue : Colors.white,
+                      ),
+                      child: Text(
+                        'Add to Cart',
+                        style: TextStyle(
+                          color: quantity > 0 ? Colors.white : Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                    const SizedBox(height:100),
+                    const Text('View similar Books: '),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+Widget _infoText(String text) {
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 5),
+    child: Text(
+      text,
+      style: TextStyle(fontSize: 16),
     ),
-  ),
-),
-
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _infoButton(String text) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.blueAccent),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 16),
-      ),
-    );
-  }
+  );
+}
 }

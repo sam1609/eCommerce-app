@@ -243,42 +243,53 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                                           Row(
   children: [
     IconButton(
-      icon: Icon(Icons.remove),
-      onPressed: () {
-        setState(() {
-          if (item['Qty'] > 1) {
-            int updatedQty = item['Qty'] - 1;
-            item['Qty'] = updatedQty; // Update the quantity immediately
-            print('changed value: $updatedQty');
-            webUpdateUserCart(
-              item['ProductID'],
-              'WEB_139',
-              item['CartID'].toString(),
-              updatedQty.toString(),
-            );
-            _fetchUserCart();
-          }
-        });
-      },
-    ),
+  icon: const Icon(Icons.remove),
+  onPressed: () {
+    if (item['Qty'] > 1) {
+      int updatedQty = item['Qty'] - 1;
+      item['Qty'] = updatedQty; // Update the quantity immediately
+      print('changed value: $updatedQty');
+      
+      webUpdateUserCart(
+        item['ProductID'],
+        'WEB_139',
+        item['CartID'].toString(),
+        updatedQty.toString(),
+      ).then((result) {
+        // Call _fetchUserCart after the update is complete
+        _fetchUserCart();
+      }).catchError((error) {
+        // Handle errors here if needed
+        print('Error updating cart: $error');
+      });
+    }
+  },
+),
+
     Text('  ${item['Qty']}  '),
-    IconButton(
-      icon: Icon(Icons.add),
-      onPressed: () {
-        setState(() {
-          int updatedQty = item['Qty'] + 1;
-          item['Qty'] = updatedQty; // Update the quantity immediately
-          print('changed value: $updatedQty');
-          webUpdateUserCart(
-            item['ProductID'],
-            'WEB_139',
-            item['CartID'].toString(),
-            updatedQty.toString(),
-          );
-          _fetchUserCart();
-        });
-      },
-    ),
+   IconButton(
+  icon: const Icon(Icons.add),
+  onPressed: () {
+    // if (item['Qty'] > 1) {
+      int updatedQty = item['Qty'] + 1;
+      item['Qty'] = updatedQty; // Update the quantity immediately
+      print('changed value: $updatedQty');
+      
+      webUpdateUserCart(
+        item['ProductID'],
+        'WEB_139',
+        item['CartID'].toString(),
+        updatedQty.toString(),
+      ).then((result) {
+        // Call _fetchUserCart after the update is complete
+        _fetchUserCart();
+      }).catchError((error) {
+        // Handle errors here if needed
+        print('Error updating cart: $error');
+      });
+    // }
+  },
+),
   ],
 ),
 
