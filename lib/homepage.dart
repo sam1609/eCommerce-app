@@ -7,6 +7,24 @@ import 'NavigationBarPage3.dart';
 import 'NavigationBarPage4.dart';
 import 'NavigationBarPage5.dart';
 import 'API.dart';
+Future<int> getCartItemQtyCount() async {
+  try {
+    final List<Map<String, dynamic>> response = await webGetUserCartandWishlistCount();
+    
+    // Check if the response contains data and is not empty
+    if (response.isNotEmpty) {
+      final int cartItemQtyCount = response[0]['CartItemQtyCount'];
+      return cartItemQtyCount;
+    } else {
+      // Handle the case when the response is empty or doesn't contain the expected data
+      throw Exception('Failed to get CartItemQtyCount');
+    }
+  } catch (e) {
+    // Handle any exceptions that might occur during the HTTP request
+    print('Error getting CartItemQtyCount: $e');
+    throw Exception('Failed to get CartItemQtyCount');
+  }
+}
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // Future<List<dynamic>> fetchNearbyPlaces(double latitude, double longitude) async {
@@ -190,9 +208,51 @@ Future<void> reverseGeocodeCoordinates() async {
     icon: Icon(Icons.shopping_bag), // You can change this icon to a shopping-related icon
   ),
   BottomNavigationBarItem(
-    label: 'Cart',
-    icon: Icon(Icons.shopping_cart),
+  label: 'Cart',
+  icon: Stack(
+    children: [
+      Icon(Icons.shopping_cart),
+      Positioned(
+        right: 0,
+        top: 0,
+        child: FutureBuilder<int>(
+          future: getCartItemQtyCount(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Return a loading indicator while waiting for the data
+              return CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+              );
+            } else if (snapshot.hasError) {
+              // Handle the error state
+              return Container(); // You can customize the error UI here
+            } else if (snapshot.hasData && snapshot.data! > 0) {
+              // Display the red filled circle with cartItemQtyCount
+              return Container(
+                padding: EdgeInsets.all(2.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.red,
+                ),
+                child: Text(
+                  snapshot.data.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.0,
+                  ),
+                ),
+              );
+            } else {
+              // If cartItemQtyCount is 0, don't display the circle
+              return Container();
+            }
+          },
+        ),
+      ),
+    ],
   ),
+)
+
 ]
         ),
       ),

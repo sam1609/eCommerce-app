@@ -225,6 +225,7 @@ void _showInfo(int index) {
       Text(
         data['SalePrice'].toString(),
         style: TextStyle(
+          color: Colors.grey,
           decoration: TextDecoration.lineThrough, // Add strike-through
         ),
       ),
@@ -736,6 +737,7 @@ class BooksListPage extends StatelessWidget {
       Text(
         book['SalePrice'].toString(),
         style: TextStyle(
+          color: Colors.grey,
           decoration: TextDecoration.lineThrough, // Add strike-through
         ),
       ),

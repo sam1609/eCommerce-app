@@ -15,6 +15,8 @@ String? branchid;
 String? signupvia;
 String? companyname;
 String? financialperiod;
+
+String strUserID='WEB_139';
 // Future<Map<String, dynamic>> WebGetCompanyDetail() async {
  
 //   final url = apiurl+'/api/WebCompanyInfo?accessCode='+accessCode;
@@ -187,6 +189,27 @@ Future<List<Map<String, dynamic>>> webUpdateUserCart(String bookcode, String cus
 
 Future<List<Map<String, dynamic>>> webGetSimilarBooks(String bookcode) async {
   final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebGetSimilarBooks?iCompanyID=$companyid&iBranchID=$branchid&strOtherCountry=INDIA&strBookCode=$bookcode&accessCode=$accessCode';
+  final Uri uri = Uri.parse(apiUrl);
+  print('Here is final url: $uri');
+  final response = await http.post(
+    uri,
+    headers: {
+      'Authorization': basicAuth,
+    },
+  );
+print('look here fast : $uri');
+  if (response.statusCode == 200) {
+    print('Update initiated');
+    return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to fetch data');
+  }
+}
+
+
+
+Future<List<Map<String, dynamic>>> webGetUserCartandWishlistCount() async {
+  final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebGetUserCartandWishlistCount?strUserID=$strUserID&iCompanyID=$companyid&iBranchID=$branchid&accessCode=$accessCode';
   final Uri uri = Uri.parse(apiUrl);
   print('Here is final url: $uri');
   final response = await http.post(

@@ -1,6 +1,6 @@
 // slide and button both 
 
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'API.dart'; // Import the file containing webGetUserCart function
 import 'dart:async'; // Import to work with Futures
@@ -204,13 +204,13 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(item['BookName'] ?? 'No Book Name'),
-                                          Text('Author: ${item['AuthorName'] ?? 'No Author'}'),
+                                          Text('Name:     ${item['BookName'] ?? 'No Book Name'}'),
+                                          Text('Author:   ${item['AuthorName'] ?? 'No Author'}'),
                                           RichText(
                                             text: TextSpan(
                                               children: <TextSpan>[
                                                 TextSpan(
-                                                  text: 'Price: ',
+                                                  text: 'Price:    ',
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                   ),
@@ -239,6 +239,7 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                                               ],
                                             ),
                                           ),
+                                            Text('Total:    ${item['SaleCurrency'] ?? 'No Currency'} ${item['TotalAmt'] ?? ''}'),
                                           // Text('Quantity: ${item['Qty'] ?? 'No Quantity'}'),
                                           Row(
   children: [
@@ -353,14 +354,14 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                             ),
                           ),
                           Text(
-                            '${cartData?[0]['BeforeShipCostNetAmt']}',
+                              '${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['BeforeShipCostNetAmt'])}',
                             style: TextStyle(
                               fontSize: 16.0,
                               color: Colors.white,
                             ),
                           ),
                           Text(
-                            '+${cartData?[0]['ShipCost']}(Shipping)',
+                            '+${cartData?[0]['SaleCurrency']} ${cartData?[0]['ShipCost']}(Shipping)',
                             style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.white,
@@ -370,7 +371,7 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'NetAmount: ${cartData?[0]['NetAmount']}',
+                                'NetAmount: ${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['NetAmount'])}',
                                 style: TextStyle(
                                   fontSize: 16.0,
                                   color: Colors.white,
