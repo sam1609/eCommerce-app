@@ -115,7 +115,7 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
       SizedBox(width: 8.0),
       Text(
         'Your Cart',
-        style: TextStyle(fontSize: 16.0, color: Colors.black), // Set the text color to black
+        style: TextStyle(fontSize: 20.0, color: Colors.black), // Set the text color to black
       ),
     ],
   ),
@@ -336,75 +336,177 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                         },
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 16.0),
-                      padding: EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Total Amount:',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                              '${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['BeforeShipCostNetAmt'])}',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            '+${cartData?[0]['SaleCurrency']} ${cartData?[0]['ShipCost']}(Shipping)',
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'NetAmount: ${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['NetAmount'])}',
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                ' (payable)',
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          MaterialButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FormPage(
-          netAmount: cartData?[0]['NetAmount'] ?? 0.0,
-        ),
+                    SizedBox(height: 15,),
+                 Row(
+  mainAxisAlignment: MainAxisAlignment.start,
+  children: [
+    Text(
+      '    Order Summary:',
+      style: TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+        color: Color.fromARGB(255, 0, 0, 0),
       ),
-    );
-  },
-  color: Colors.blue,
-  textColor: Colors.white,
-  child: Text('Proceed to Fill Information'),
-)
-                        ],
-                      ),
-                    ),
+    ),
+  ],
+),
+
+            SizedBox(height: 15,),
+                    Table(
+  border: TableBorder.all(width: 0, color: Colors.transparent),
+  children: [
+    // Row 1
+    TableRow(
+      children: [
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              '    Order Subtotal:',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ),
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              '${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['BeforeShipCostNetAmt'])}    ',
+               textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 14.0,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+
+    // Row 2
+    TableRow(
+      children: [
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              '    Shipping:',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ),
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              '${cartData?[0]['SaleCurrency']} ${cartData?[0]['ShipCost']}    ',
+               textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 14.0,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+
+    // Row 3
+    TableRow(
+      children: [
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              '    Order Amount (Payable):',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ),
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              '${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['NetAmount'])}    ',
+               textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 14.0,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+
+    // Button Row
+    // TableRow(
+    //   children: [
+    //     TableCell(
+    //       child: Container(), // Empty cell
+    //     ),
+    //     TableCell(
+    //       child: Padding(
+    //         padding: const EdgeInsets.all(16.0),
+    //         child: MaterialButton(
+    //           onPressed: () {
+    //             Navigator.push(
+    //               context,
+    //               MaterialPageRoute(
+    //                 builder: (context) => FormPage(
+    //                   netAmount: cartData?[0]['NetAmount'] ?? 0.0,
+    //                 ),
+    //               ),
+    //             );
+    //           },
+    //           color: Colors.blue,
+    //           textColor: Colors.white,
+    //           child: Text('Proceed to Fill Information'),
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // ),
+  ],
+),
+SizedBox(height: 15,),
+Align(
+  alignment: Alignment.centerRight,
+  child: Padding(
+    padding: EdgeInsets.only(right: 16.0), // Adjust the right padding as needed
+    child: MaterialButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FormPage(
+              netAmount: cartData?[0]['NetAmount'] ?? 0.0,
+            ),
+          ),
+        );
+      },
+      color: Colors.blue,
+      textColor: Colors.white,
+      child: Text('Proceed to Fill Information'),
+    ),
+  ),
+),
+
+
+            SizedBox(height: 15,),
+
                   ],
                 ),
     );

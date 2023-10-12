@@ -12,6 +12,7 @@ class FormPage extends StatefulWidget {
 }
 
 class _FormPageState extends State<FormPage> {
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   UpiIndia _upiIndia = UpiIndia();
   List<UpiApp>? apps;
 
@@ -122,55 +123,106 @@ class _FormPageState extends State<FormPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
+        child:  Form(
+          key: _formKey,
+          child: Column(
+            children: [
             // ... Your form fields go here ...
-            TextField(
+            TextFormField(
               decoration: InputDecoration(
                 labelText: 'Phone number',
               ),
               keyboardType: TextInputType.phone,
+              validator: (value) {
+                  if (value == null || value.isEmpty || value.length<10) {
+                    return 'Phone Number Must contain atleast 10 Digits';
+                  }
+                  return null;
+                },
             ),
-            TextField(
+            TextFormField(
               decoration: InputDecoration(
                 labelText: 'Name',
               ),
               keyboardType: TextInputType.text,
+              validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Name is required';
+                  }
+                  return null;
+                },
             ),
-            TextField(
+            TextFormField(
               decoration: InputDecoration(
                 labelText: 'Address Line 1',
               ),
               keyboardType: TextInputType.text,
+              validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Address Line 1 is required';
+                  }
+                  return null;
+                },
             ),
-            TextField(
+            TextFormField(
               decoration: InputDecoration(
                 labelText: 'Address Line 2',
               ),
               keyboardType: TextInputType.text,
             ),
-            TextField(
+            TextFormField(
               decoration: InputDecoration(
                 labelText: 'City',
               ),
               keyboardType: TextInputType.text,
+              validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'City is required';
+                  }
+                  return null;
+                },
             ),
-            TextField(
+            TextFormField(
               decoration: InputDecoration(
                 labelText: 'State',
               ),
               keyboardType: TextInputType.text,
+              validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'State is required';
+                  }
+                  return null;
+                },
             ),
-            TextField(
+            TextFormField(
               decoration: InputDecoration(
                 labelText: 'Country',
               ),
               keyboardType: TextInputType.text,
+              validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Country is required';
+                  }
+                  return null;
+                },
             ),
-  ElevatedButton(
-              onPressed: showUpiAppChooser,
-              child: Text('Proceed to Pay ₹${widget.netAmount}'),
-            ),
+
+SizedBox(height: 20,),
+
+   Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        showUpiAppChooser();
+                      }
+                    },
+                    child: Text('Proceed to Pay ₹${widget.netAmount}'),
+                  ),
+                ),
+              ),
             // Text(
             //   'Net Amount: ${widget.netAmount}',
             //   style: TextStyle(fontSize: 20),
@@ -178,6 +230,6 @@ class _FormPageState extends State<FormPage> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

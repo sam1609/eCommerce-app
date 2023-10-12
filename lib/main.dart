@@ -85,18 +85,64 @@ void checkPhoneNumber() async {
     final String phoneNumber = '${selectedCountry?.dialCode ?? ''}${phoneNumberController.text}';
     try {
       print('Sending SMS to: $phoneNumber'); // Add this line
+
+      // Show a loading dialog here
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                CircularProgressIndicator(),
+                SizedBox(height: 10),
+                Text("Loading. Please wait..."),
+              ],
+            ),
+          );
+        },
+        barrierDismissible: false, // Prevent closing by tapping outside
+      );
+
+      
+
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {
           print('Verification completed');
-          // Handle automatic code verification
         },
         verificationFailed: (FirebaseAuthException e) {
-          print('Verification failed: ${e.message}');
-          // Handle verification failed
-        },
+  print('Verification failed: ${e.message}');
+
+    // Close the loading dialog when navigating to OTPVerificationPage
+    Navigator.of(context).pop();
+  setState(() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Invalid Mobile Number'),
+          content: Text('The mobile number is invalid. Please check the number and try again.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      }
+    );
+
+  });
+},
+
+
         codeSent: (String verificationId, int? resendToken) {
-          print('Code sent: $verificationId'); // Add this line
+          // Close the loading dialog when navigating to OTPVerificationPage
+      Navigator.of(context).pop();
+          print('Code sent: $verificationId');
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -110,7 +156,6 @@ void checkPhoneNumber() async {
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           print('Auto retrieval timeout');
-          // Handle auto retrieval timeout
         },
       );
     } catch (e, s) {
