@@ -4,11 +4,14 @@ import 'homepage.dart';
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print('Initializing Firebase...');
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+    );
     print('Firebase initialized successfully.');
   }catch (e, s) {
     print('Failed to initialize Firebase: $e\n$s');
@@ -81,6 +84,7 @@ void checkPhoneNumber() async {
   if (phoneNumberController.text.length == 10) {
     final String phoneNumber = '${selectedCountry?.dialCode ?? ''}${phoneNumberController.text}';
     try {
+      print('Sending SMS to: $phoneNumber'); // Add this line
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {
@@ -92,7 +96,7 @@ void checkPhoneNumber() async {
           // Handle verification failed
         },
         codeSent: (String verificationId, int? resendToken) {
-          print('Code sent');
+          print('Code sent: $verificationId'); // Add this line
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -116,6 +120,8 @@ void checkPhoneNumber() async {
     print('Phone number is not 10 digits long');
   }
 }
+
+
 
   // Function to show the country selection bottom sheet
   void showCountrySelectionSheet() {
@@ -273,7 +279,11 @@ class OTPVerificationPageState extends State<OTPVerificationPage> {
   TextEditingController _controller2 = TextEditingController();
   TextEditingController _controller3 = TextEditingController();
   TextEditingController _controller4 = TextEditingController();
+  TextEditingController _controller5 = TextEditingController();
+  TextEditingController _controller6 = TextEditingController();
   List<FocusNode> _focusNodes = [
+  FocusNode(),
+  FocusNode(),
   FocusNode(),
   FocusNode(),
   FocusNode(),
@@ -288,19 +298,60 @@ class OTPVerificationPageState extends State<OTPVerificationPage> {
     super.initState();
     startTimer();
   }
- void verifyOTP() async {
-    final String otpCode = '${_controller1.text}${_controller2.text}${_controller3.text}${_controller4.text}';
-    final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: widget.verificationId,
-      smsCode: otpCode,
+void verifyOTP() async {
+  final String otpCode = '${_controller1.text}${_controller2.text}${_controller3.text}${_controller4.text}${_controller5.text}${_controller6.text}';
+  print('Verifying OTP: $otpCode, verificationId: ${widget.verificationId}'); // Add this line
+  final PhoneAuthCredential credential = PhoneAuthProvider.credential(
+    verificationId: widget.verificationId,
+    smsCode: otpCode,
+  );
+ try {
+    await FirebaseAuth.instance.signInWithCredential(credential);
+    print('Verification successful');
+    print(widget.phoneNumber);
+String phoneNumber = '';
+String countryCode = '';
+
+if (widget.phoneNumber.length >= 10) {
+  // Extract the last 10 digits as the phone number
+  phoneNumber = widget.phoneNumber.substring(widget.phoneNumber.length - 10);
+
+  // Extract the rest as the country code
+  countryCode = widget.phoneNumber.substring(0, widget.phoneNumber.length - 10);
+}
+print(phoneNumber);
+print(countryCode);
+    // ignore: use_build_context_synchronously
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(countryCode ,phoneNumber),
+      ),
     );
-    try {
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      // If successful, navigate to the next page
-    } catch (e) {
-      // Handle credential verification failed
-    }
+  } catch (e) {
+    print('Verification failed: $e'); // Add this line
+    // ignore: use_build_context_synchronously
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Verification Failed'),
+          content: Text('An error occurred during verification. Please try again.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
+}
+
+
   void startTimer() {
     _start = 120;
     _showResend = false;
@@ -348,7 +399,7 @@ class OTPVerificationPageState extends State<OTPVerificationPage> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
-              'We have sent you a 4 digit verification code on the mobile number ending with ${widget.phoneNumber.substring(widget.phoneNumber.length - 4)}',
+              'We have sent you a 6 digit verification code on the mobile number ending with ${widget.phoneNumber.substring(widget.phoneNumber.length - 4)}',
             ),
            Row(
   mainAxisAlignment: MainAxisAlignment.center,
@@ -356,7 +407,9 @@ class OTPVerificationPageState extends State<OTPVerificationPage> {
     singleOTPBox(_controller1, _focusNodes[0], _focusNodes[1]),
     singleOTPBox(_controller2, _focusNodes[1], _focusNodes[2]),
     singleOTPBox(_controller3, _focusNodes[2], _focusNodes[3]),
-    singleOTPBox(_controller4, _focusNodes[3], null),
+    singleOTPBox(_controller4, _focusNodes[3], _focusNodes[4]),
+    singleOTPBox(_controller5, _focusNodes[4], _focusNodes[5]),
+    singleOTPBox(_controller6, _focusNodes[5], null),
   ],
 ),
  SizedBox(height: 20),  // Add some space between the OTP fields and the Verify button
