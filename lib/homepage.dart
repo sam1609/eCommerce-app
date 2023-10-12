@@ -171,9 +171,9 @@ Future<void> reverseGeocodeCoordinates() async {
                 controller: _pageController,
                 children: [
                   NavigationBarPage1(title: 'UC', display_Name: display_Name),
-                  NavigationBarPage2(pageTitle: 'Beauty', displayName: display_Name),
-                  NavigationBarPage3(pageTitle: 'Homes', displayName: display_Name),
-                  NavigationBarPage4(pageTitle: 'Shop', displayName: display_Name),
+                  NavigationBarPage2(title: 'Beauty', display_Name: display_Name),
+                  NavigationBarPage3(title: 'Homes', display_Name: display_Name),
+                  NavigationBarPage4(title: 'Shop', display_Name: display_Name),
                   NavigationBarPage5(title: 'Cart'),
                 ],
                 onPageChanged: (index) {

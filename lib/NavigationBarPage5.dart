@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'API.dart'; // Import the file containing webGetUserCart function
 import 'dart:async'; // Import to work with Futures
+import 'formpage.dart';
 // import 'package:flutter/widgets.dart'; // Import to use Image widget
 
 class NavigationBarPage5 extends StatefulWidget {
@@ -386,6 +387,21 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                               ),
                             ],
                           ),
+                          MaterialButton(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FormPage(
+          netAmount: cartData?[0]['NetAmount'] ?? 0.0,
+        ),
+      ),
+    );
+  },
+  color: Colors.blue,
+  textColor: Colors.white,
+  child: Text('Proceed to Fill Information'),
+)
                         ],
                       ),
                     ),
