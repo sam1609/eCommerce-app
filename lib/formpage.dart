@@ -123,6 +123,7 @@ class _FormPageState extends State<FormPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(  // Add this line
         child:  Form(
           key: _formKey,
           child: Column(
@@ -230,6 +231,6 @@ SizedBox(height: 20,),
           ],
         ),
       ),
-    ));
+    )));
   }
 }

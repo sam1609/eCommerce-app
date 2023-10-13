@@ -324,8 +324,8 @@ void _showInfo(int index) {
                     ),
                   ],
                 ),
-                    const SizedBox(height:100),
-                    const Text('View similar Books: '),
+                    // const SizedBox(height:100),
+                    // const Text('View similar Books: '),
               ],
             ),
           );
@@ -836,8 +836,8 @@ class BooksListPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                    const SizedBox(height:100),
-                    const Text('View similar Books: '),
+                    // const SizedBox(height:100),
+                    // const Text('View similar Books: '),
               ],
             ),
           );
