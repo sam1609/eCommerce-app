@@ -18,6 +18,12 @@ class NavigationBarPage3 extends StatefulWidget {
 }
 
 class _NavigationBarPage3State extends State<NavigationBarPage3> {
+   Future<void>? fetchDemoButtonData2;
+  Future<void>? fetchDemoButtonData3;
+   Future<void>? fetchDemoButtonData4;
+  Future<void>? fetchDemoButtonData5;
+   Future<void>? fetchDemoButtonData6;
+  Future<void>? fetchDemoButtonData8;
   String searchText = '';
   List<String> categories = [];
   List<Map<String, dynamic>> advertisementData = [];
@@ -56,42 +62,42 @@ Future<void> fetchAndSetCategories() async {
       }).catchError((error) {
         print('Error fetching slider home page: $error');
       });
-    fetchSliderHomePage('2').then((data) {
+    fetchDemoButtonData2 = fetchSliderHomePage('2').then((data) {
         setState(() {
           demoButtonData2 = data;
         });
       }).catchError((error) {
         print('Error fetching demo button data: $error');
       });
-      fetchSliderHomePage('3').then((data) {
+      fetchDemoButtonData3 =fetchSliderHomePage('3').then((data) {
         setState(() {
           demoButtonData3 = data;
         });
       }).catchError((error) {
         print('Error fetching demo button data: $error');
       });
-      fetchSliderHomePage('4').then((data) {
+      fetchDemoButtonData4 =fetchSliderHomePage('4').then((data) {
         setState(() {
           demoButtonData4 = data;
         });
       }).catchError((error) {
         print('Error fetching demo button data: $error');
       });
-      fetchSliderHomePage('5').then((data) {
+      fetchDemoButtonData5 =fetchSliderHomePage('5').then((data) {
         setState(() {
           demoButtonData5 = data;
         });
       }).catchError((error) {
         print('Error fetching demo button data: $error');
       });
-      fetchSliderHomePage('6').then((data) {
+      fetchDemoButtonData6 =fetchSliderHomePage('6').then((data) {
         setState(() {
           demoButtonData6 = data;
         });
       }).catchError((error) {
         print('Error fetching demo button data: $error');
       });
-      fetchSliderHomePage('8').then((data) {
+      fetchDemoButtonData8 =fetchSliderHomePage('8').then((data) {
         setState(() {
           demoButtonData8 = data;
         });
@@ -469,9 +475,9 @@ Widget _infoText(String text) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Use this to distribute buttons evenly
           children: [
-            _buildDemoButton('assets/demo1.png', _showDemoButtonInfo),
-            _buildDemoButton('assets/demo2.png', _showDemoButtonInfo3),
-            _buildDemoButton('assets/demo1.png', _showDemoButtonInfo4),
+            _buildDemoButton('assets/demo1.png', _showDemoButtonInfo,fetchDemoButtonData2,'2'),
+            _buildDemoButton('assets/demo2.png', _showDemoButtonInfo3,fetchDemoButtonData3,'3'),
+            _buildDemoButton('assets/demo1.png', _showDemoButtonInfo4,fetchDemoButtonData4,'4'),
           ],
         ),
       ),
@@ -480,9 +486,9 @@ Widget _infoText(String text) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Use this to distribute buttons evenly
           children: [
-            _buildDemoButton('assets/demo2.png', _showDemoButtonInfo5),
-            _buildDemoButton('assets/demo1.png', _showDemoButtonInfo6),
-            _buildDemoButton('assets/demo2.png', _showDemoButtonInfo8),
+            _buildDemoButton('assets/demo2.png', _showDemoButtonInfo5,fetchDemoButtonData5,'5'),
+            _buildDemoButton('assets/demo1.png', _showDemoButtonInfo6,fetchDemoButtonData6,'6'),
+            _buildDemoButton('assets/demo2.png', _showDemoButtonInfo8,fetchDemoButtonData8,'8'),
           ],
         ),
       ),
@@ -493,21 +499,34 @@ Widget _infoText(String text) {
 
 
           SizedBox(
-  height: 450,
-  child: PageView.builder(
-    controller: _adController,
-    itemCount: advertisements.length,
-    itemBuilder: (context, index) {
-      return GestureDetector(
-        onTap: () => _showInfo(index),
-        child: Image.network(
-          advertisements[index],
-          fit: BoxFit.cover,
-        ),
-      );
-    },
-  ),
-),
+          height: 450,
+          child: advertisements.isEmpty // Check if advertisements is empty
+              ? Center(
+                  child: Text('Loading...'), // Display loading text if data is still loading
+                )
+              : PageView.builder(
+                  controller: _adController,
+                  itemCount: advertisements.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => _showInfo(index),
+                      child: Image.network(
+                        advertisements[index],
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                )),
           // Horizontal Scrolling Buttons
           // Horizontal Scrolling Buttons in Two Rows
 // Horizontal Scrolling Buttons in Two Rows
@@ -586,22 +605,33 @@ Widget _buildButton2(String buttonText, String imagePath) {
       ],
     ),
   );
-}Widget _buildDemoButton(String imagePath, Function()? onPressed) {
+}Widget _buildDemoButton(String imagePath, Function()? onPressed, Future<void>? fetchData, String name) {
     return GestureDetector(
       onTap: onPressed,
-      child: Column(
-        children: [
-          Container(
-            height: 80,
-            width: 80,
-            child: Image.asset(imagePath),
-          ),
-          Text(
-            'Demo Button',
-            style: TextStyle(fontSize: 14.0),
-            textAlign: TextAlign.center,
-          ),
-        ],
+      child: FutureBuilder<void>(
+        future: fetchData,  // pass the specific Future variable here
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Text('Loading data...'));
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return Column(
+              children: [
+                Container(
+                  height: 80,
+                  width: 80,
+                  child: Image.asset(imagePath),
+                ),
+                Text(
+                  name,
+                  style: TextStyle(fontSize: 14.0),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }}

@@ -240,7 +240,8 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                                               ],
                                             ),
                                           ),
-                                            Text('Total:    ${item['SaleCurrency'] ?? 'No Currency'} ${item['TotalAmt'] ?? ''}'),
+                                            Text('Total:    INR ${item['TotalAmt'] ?? ''}'),
+                                         //Text('Total:    ${item['SaleCurrency'] ?? 'No Currency'} ${item['TotalAmt'] ?? ''}'),
                                           // Text('Quantity: ${item['Qty'] ?? 'No Quantity'}'),
                                           Row(
   children: [
@@ -375,7 +376,8 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: Text(
-              '${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['BeforeShipCostNetAmt'])}    ',
+              //'${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['BeforeShipCostNetAmt'])}    ',
+              'INR ${NumberFormat('#,##0').format(cartData?[0]['BeforeShipCostNetAmt'])}    ',
                textAlign: TextAlign.right,
               style: TextStyle(
                 fontSize: 14.0,
@@ -407,7 +409,8 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: Text(
-              '${cartData?[0]['SaleCurrency']} ${cartData?[0]['ShipCost']}    ',
+              'INR ${cartData?[0]['ShipCost']}    ',
+              // '${cartData?[0]['SaleCurrency']} ${cartData?[0]['ShipCost']}    ',
                textAlign: TextAlign.right,
               style: TextStyle(
                 fontSize: 14.0,
@@ -439,8 +442,9 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: Text(
-              '${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['NetAmount'])}    ',
-               textAlign: TextAlign.right,
+              'INR ${NumberFormat('#,##0').format(cartData?[0]['NetAmount'])}    ',
+              // '${cartData?[0]['SaleCurrency']} ${NumberFormat('#,##0').format(cartData?[0]['NetAmount'])}    ',
+                textAlign: TextAlign.right,
               style: TextStyle(
                 fontSize: 14.0,
                 color: Colors.blue,
