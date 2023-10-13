@@ -4,7 +4,7 @@ import 'dart:async';
 //import 'package:flutter/material.dart';
 
 const String apiurl="https://ecommerceapi.cloudpub.in";
-const String accessCode='lknoXi8oXYZp9U3Xd/6vngMBRKImyBVgs67AKIH+GnY=';
+const String accessCode='TxBmrWQQtOdSlo2uBEpoKYb5kBX+wBaiR7SWUu3WgAk=';
 // final String iCompanyID ='1';
 // final String BranchID = '1';
   String username = '-11';
@@ -16,7 +16,7 @@ String? signupvia;
 String? companyname;
 String? financialperiod;
 
-String strUserID='WEB_139';
+String strUserID='WEB_4';
 // Future<Map<String, dynamic>> WebGetCompanyDetail() async {
  
 //   final url = apiurl+'/api/WebCompanyInfo?accessCode='+accessCode;
@@ -67,6 +67,7 @@ Future<List<Map<String, dynamic>>> fetchSliderHomePage(String sliderseq) async {
   );
 
   if (response.statusCode == 200) {
+    print('hausd ::: $uri');
     return List<Map<String, dynamic>>.from(jsonDecode(response.body));
   } else {
     throw Exception('Failed to fetch data');
@@ -109,7 +110,7 @@ Future<Map<String, dynamic>> reverseGeocode(double latitude, double longitude) a
 }
 
 Future<List<Map<String, dynamic>>> webGetUserCart() async {
-  final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebGetUserCart?iCompanyID=$companyid&iBranchID=$branchid&strOtherCountry=0&strCustomerCode=WEB_139&accessCode=$accessCode';
+  final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebGetUserCart?iCompanyID=$companyid&iBranchID=$branchid&strOtherCountry=0&strCustomerCode=$strUserID&accessCode=$accessCode';
   final Uri uri = Uri.parse(apiUrl);
   // print('Here is final url: $uri');
   final response = await http.post(
@@ -128,7 +129,7 @@ Future<List<Map<String, dynamic>>> webGetUserCart() async {
 
 
 Future<List<Map<String, dynamic>>> webInsertUserCart(String bookcode, String bookquantity) async {
-  final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebInsertUserCart?strCustomerCode=WEB_139&strBookCode=$bookcode&strBookQty=$bookquantity&strBookClubID=0&iCompanyID=$companyid&iBranchID=$branchid&accessCode=$accessCode';
+  final String apiUrl = 'https://ecommerceapi.cloudpub.in/api/WebInsertUserCart?strCustomerCode=$strUserID&strBookCode=$bookcode&strBookQty=$bookquantity&strBookClubID=0&iCompanyID=$companyid&iBranchID=$branchid&accessCode=$accessCode';
   final Uri uri = Uri.parse(apiUrl);
   // print('Here is final url: $uri');
   final response = await http.post(

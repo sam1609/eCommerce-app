@@ -6,7 +6,7 @@ import 'API.dart'; // Import the file containing webGetUserCart function
 import 'dart:async'; // Import to work with Futures
 import 'formpage.dart';
 // import 'package:flutter/widgets.dart'; // Import to use Image widget
-
+String strUserID='WEB_4';
 class NavigationBarPage5 extends StatefulWidget {
   final String title;
   final Map<String, dynamic>? productData;
@@ -72,7 +72,7 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
 //     String productIDString = productID.toString();
     
 //     // Call the delete function here
-//     await webDeleteUserCartandItem(productIDString, 'WEB_139', cartID);
+//     await webDeleteUserCartandItem(productIDString, strUserID, cartID);
 //     print('Item Deleted Successfully: $productID');
 //     ScaffoldMessenger.of(context).showSnackBar(
 //       SnackBar(
@@ -148,7 +148,7 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                                   // Call the delete function here
                                   await webDeleteUserCartandItem(
                                     item['ProductID'],
-                                    'WEB_139',
+                                    strUserID,
                                     item['CartID'].toString(),
                                   );
                                   didChangeDependencies();
@@ -255,7 +255,7 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
       
       webUpdateUserCart(
         item['ProductID'],
-        'WEB_139',
+        strUserID,
         item['CartID'].toString(),
         updatedQty.toString(),
       ).then((result) {
@@ -280,7 +280,7 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
       
       webUpdateUserCart(
         item['ProductID'],
-        'WEB_139',
+        strUserID,
         item['CartID'].toString(),
         updatedQty.toString(),
       ).then((result) {
@@ -305,7 +305,7 @@ class _NavigationBarPage5State extends State<NavigationBarPage5> {
                                         try {
                                           await webDeleteUserCartandItem(
                                             item['ProductID'],
-                                            'WEB_139',
+                                            strUserID,
                                             item['CartID'].toString(),
                                           );
                                           
