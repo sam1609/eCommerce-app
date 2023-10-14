@@ -406,35 +406,65 @@ Row(
 ),
 
           // Search Bar
+          // Padding(
+          //   padding: const EdgeInsets.all(16.0),
+          //   child: Stack(
+          //     alignment: Alignment.centerRight,
+          //     children: [
+          //       TextField(
+          //         onChanged: (text) {
+          //           setState(() {
+          //             searchText = text;
+          //           });
+          //         },
+          //         decoration: InputDecoration(
+          //           labelText: 'Search',
+          //           border: OutlineInputBorder(),
+          //           suffixIcon: searchText.isNotEmpty
+          //               ? IconButton(
+          //                   icon: Icon(Icons.clear),
+          //                   onPressed: () {
+          //                     setState(() {
+          //                       searchText = '';
+          //                     });
+          //                   },
+          //                 )
+          //               : Icon(Icons.search),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+
+
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                TextField(
-                  onChanged: (text) {
-                    setState(() {
-                      searchText = text;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Search',
-                    border: OutlineInputBorder(),
-                    suffixIcon: searchText.isNotEmpty
-                        ? IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () {
-                              setState(() {
-                                searchText = '';
-                              });
-                            },
-                          )
-                        : Icon(Icons.search),
-                  ),
-                ),
-              ],
-            ),
-          ),
+  padding: const EdgeInsets.all(16.0),
+  child: OutlinedButton(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SearchPage()),
+      );
+    },
+    style: OutlinedButton.styleFrom(
+      side: BorderSide(width: 0.5, color: Colors.grey),
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Search',
+          style: TextStyle(fontSize: 18),
+        ),
+        Icon(
+          Icons.search,
+          size: 24,
+        ),
+      ],
+    ),
+  ),
+),
           // Rotating Advertisements
          
           // Grid View with Filtered Items
