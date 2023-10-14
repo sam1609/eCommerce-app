@@ -5,6 +5,24 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+class SharedPreferencesHelper {
+  static Future<void> setPhoneNumber(String countryCode, String phoneNumber) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('countryCode', countryCode);
+    await prefs.setString('phoneNumber', phoneNumber);
+  }
+
+  static Future<Map<String, String>> getPhoneNumber() async {
+    final prefs = await SharedPreferences.getInstance();
+    final countryCode = prefs.getString('countryCode');
+    final phoneNumber = prefs.getString('phoneNumber');
+    if (countryCode != null && phoneNumber != null) {
+      return {'countryCode': countryCode, 'phoneNumber': phoneNumber};
+    }
+    return {};
+  }
+}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print('Initializing Firebase...');
@@ -38,7 +56,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginPage(),
+      home: FutureBuilder<Map<String, String>>(
+        future: SharedPreferencesHelper.getPhoneNumber(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();  // Show a loading spinner while waiting
+          } else if (snapshot.data?.isNotEmpty == true) {
+            final countryCode = snapshot.data!['countryCode']!;
+            final phoneNumber = snapshot.data!['phoneNumber']!;
+            return HomePage(countryCode, phoneNumber);  // Go directly to HomePage if phone number is saved
+          } else {
+            return LoginPage();  // Otherwise, go to LoginPage
+          }
+        },
+      ),
     );
   }
 }
@@ -350,23 +381,27 @@ void verifyOTP() async {
     verificationId: widget.verificationId,
     smsCode: otpCode,
   );
- try {
+  try {
     await FirebaseAuth.instance.signInWithCredential(credential);
     print('Verification successful');
     print(widget.phoneNumber);
-String phoneNumber = '';
-String countryCode = '';
+    String phoneNumber = '';
+    String countryCode = '';
 
-if (widget.phoneNumber.length >= 10) {
-  // Extract the last 10 digits as the phone number
-  phoneNumber = widget.phoneNumber.substring(widget.phoneNumber.length - 10);
+    if (widget.phoneNumber.length >= 10) {
+      // Extract the last 10 digits as the phone number
+      phoneNumber = widget.phoneNumber.substring(widget.phoneNumber.length - 10);
 
-  // Extract the rest as the country code
-  countryCode = widget.phoneNumber.substring(0, widget.phoneNumber.length - 10);
-}
-print(phoneNumber);
-print(countryCode);
-    // ignore: use_build_context_synchronously
+      // Extract the rest as the country code
+      countryCode = widget.phoneNumber.substring(0, widget.phoneNumber.length - 10);
+    }
+    print(phoneNumber);
+    print(countryCode);
+    
+    // Save phone number and country code to shared preferences
+    await SharedPreferencesHelper.setPhoneNumber(countryCode, phoneNumber);
+
+    // Navigate to HomePage
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -375,7 +410,6 @@ print(countryCode);
     );
   } catch (e) {
     print('Verification failed: $e'); // Add this line
-    // ignore: use_build_context_synchronously
     showDialog(
       context: context,
       builder: (context) {

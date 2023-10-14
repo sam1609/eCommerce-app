@@ -40,7 +40,7 @@ PageController _adController = PageController();
 late Timer _adTimer;
   List<String> advertisements = [];
 Future<void> fetchAndSetCategories() async {
-  List<String> newCategories = await getCategoryMultiLevel('1');
+  List<String> newCategories = await getCategoryMultiLevel();
   setState(() {
     categories = newCategories;
   });

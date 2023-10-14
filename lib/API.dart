@@ -67,16 +67,38 @@ Future<List<Map<String, dynamic>>> fetchSliderHomePage(String sliderseq) async {
   );
 
   if (response.statusCode == 200) {
-    print('hausd ::: $uri');
+    // print('hausd ::: $uri');
     return List<Map<String, dynamic>>.from(jsonDecode(response.body));
   } else {
     throw Exception('Failed to fetch data');
   }
 }
 
-Future<List<String>> getCategoryMultiLevel(String iCompanyID) async {
+Future<List<Map<String, dynamic>>> webTitleSearchData(String sliderseq) async {  //not used for now
+  final String apiUrl = 'http://ecommerceapi.cloudpub.in/api/WebTitleSearchData?websearchtype=&websearchText=&Searchsubjectlist=&SearchsubjectlistID=&OtherCountry=INDIA&iCompanyID=1&iBranchID=1&PublisherID=&AuthorID=&LanguageID=&TitleCategoryID=${sliderseq.toString()}&Edition=&SearchSubsubjectlistID=&TitleSubCategoryID=&PublishYear=&Binding=&TotalRecord=&Sortby=&sortingAcenDesc=&SiteName=&SchoolCode=&MinPrice=&MaxPrice=&ExcludeOutofStock=&InterestAgeGroup=&BookClass=&BookMedium=&CourseID=&ClassID=&accessCode=TxBmrWQQtOdSlo2uBEpoKYb5kBX+wBaiR7SWUu3WgAk=&PageNumber=1&PageSize=1000';
+  // print('Here is company id: $companyid');
+  //  print('Here is branch id: $branchid');
+  //  print(accessCode);
+  final Uri uri = Uri.parse(apiUrl);
+  final response = await http.post(
+    uri,
+    headers: {
+      'Authorization': basicAuth,
+    },
+  );
+
+  if (response.statusCode == 200) {
+    print('hausd fake::: $uri');
+    return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+  } else {
+    print('hausd fake::: $uri');
+    throw Exception('Failed to fetch data');
+  }
+}
+
+Future<List<String>> getCategoryMultiLevel() async {
   String apiUrl = '$apiurl/api/WebGetmultiLevelCategoryOfItem';
-  final Uri uri = Uri.parse('$apiUrl?striCompanyID=$iCompanyID&accessCode=$accessCode');
+  final Uri uri = Uri.parse('$apiUrl?striCompanyID=$companyid&accessCode=$accessCode');
 
   final response = await http.post(
     uri,
