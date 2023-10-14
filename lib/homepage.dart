@@ -7,6 +7,7 @@ import 'NavigationBarPage3.dart';
 import 'NavigationBarPage4.dart';
 import 'NavigationBarPage5.dart';
 import 'API.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 Future<int> getCartItemQtyCount() async {
   try {
     final List<Map<String, dynamic>> response = await webGetUserCartandWishlistCount();
@@ -170,7 +171,9 @@ Future<void> reverseGeocodeCoordinates() async {
               child: PageView(
                 controller: _pageController,
                 children: [
-                  NavigationBarPage1(title: 'UC', display_Name: display_Name),
+                  NavigationBarPage1(title: 'UC', display_Name: display_Name,phno: (widget.phoneNumber != null && widget.phoneNumber!.isNotEmpty) 
+      ? 'Phno: ${widget.dialCode}${widget.phoneNumber}' 
+      : 'Login'),
                   NavigationBarPage2(title: 'Beauty', display_Name: display_Name),
                   NavigationBarPage3(title: 'Homes', display_Name: display_Name),
                   NavigationBarPage4(title: 'Shop', display_Name: display_Name),
@@ -197,12 +200,13 @@ Future<void> reverseGeocodeCoordinates() async {
   ),
   BottomNavigationBarItem(
     label: 'Beauty',
-    icon: Icon(Icons.favorite), // You can change this icon to a beauty-related icon
+    icon: Image.asset('assets/beauty.png', width: 24, height: 24)
+, // You can change this icon to a beauty-related icon
   ),
-  BottomNavigationBarItem(
-    label: 'Homes',
-    icon: Icon(Icons.house), // You can change this icon to a house-related icon
-  ),
+  const BottomNavigationBarItem(
+  label: 'Homes',
+  icon: FaIcon(FontAwesomeIcons.wrench),  // Wrench icon from FontAwesome
+),
   BottomNavigationBarItem(
     label: 'Shop',
     icon: Icon(Icons.shopping_bag), // You can change this icon to a shopping-related icon

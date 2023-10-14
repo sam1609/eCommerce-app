@@ -35,6 +35,7 @@ dependencies:
   firebase_auth: ^4.10.1
   cloud_firestore: ^4.9.3
   upi_india: ^3.0.1
+  font_awesome_flutter: ^9.0.0
 
 dev_dependencies:
   flutter_test:
@@ -47,3 +48,4 @@ flutter:
     - assets/countries.json
     - assets/demo1.png
     - assets/demo2.png
+    - assets/beauty.png

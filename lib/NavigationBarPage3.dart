@@ -4,6 +4,7 @@ import 'dart:async';
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'API.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class NavigationBarPage3 extends StatefulWidget { 
   final String title;
   // ignore: non_constant_identifier_names
@@ -372,30 +373,38 @@ Widget _infoText(String text) {
       body: ListView(
         padding: EdgeInsets.only(top: 40.0), // Add padding at the top
         children: [
-          Padding(
-  padding: const EdgeInsets.all(16.0),
-  child: Container(
-    padding: EdgeInsets.all(8.0),
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.blueAccent),
-      borderRadius: BorderRadius.circular(12.0),
-    ),
-    child: Row(
-      children: [
-        Icon(Icons.location_on, color: Colors.blueAccent), // Location icon
-        SizedBox(width: 8.0), // Spacing between icon and text
-        Expanded( // Added Expanded
-          child: Text(
-            'Address: ${widget.display_Name}',
-            style: TextStyle(
-              fontSize: 16.0,
-            ),
-            softWrap: true, // Wrap the text
-          ),
-        ),
-      ],
-    ),
-  ),
+//           Padding(
+//   padding: const EdgeInsets.all(16.0),
+//   child: Container(
+//     padding: EdgeInsets.all(8.0),
+//     decoration: BoxDecoration(
+//       border: Border.all(color: Colors.blueAccent),
+//       borderRadius: BorderRadius.circular(12.0),
+//     ),
+//     child: Row(
+//       children: [
+//         Icon(Icons.location_on, color: Colors.blueAccent), // Location icon
+//         SizedBox(width: 8.0), // Spacing between icon and text
+//         Expanded( // Added Expanded
+//           child: Text(
+//             'Address: ${widget.display_Name}',
+//             style: TextStyle(
+//               fontSize: 16.0,
+//             ),
+//             softWrap: true, // Wrap the text
+//           ),
+//         ),
+//       ],
+//     ),
+//   ),
+// ),
+const Row(
+  children: <Widget>[
+    SizedBox(width: 15.0),  // Optional: to give some spacing between the icon and text
+    FaIcon(FontAwesomeIcons.wrench), // Adjust height and width accordingly
+    SizedBox(width: 15.0),  // Optional: to give some spacing between the icon and text
+    Text('Home Services', style: TextStyle(fontSize: 24.0)),
+  ],
 ),
           // Search Bar
           Padding(

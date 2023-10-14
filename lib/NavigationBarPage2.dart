@@ -372,31 +372,39 @@ Widget _infoText(String text) {
       body: ListView(
         padding: EdgeInsets.only(top: 40.0), // Add padding at the top
         children: [
-          Padding(
-  padding: const EdgeInsets.all(16.0),
-  child: Container(
-    padding: EdgeInsets.all(8.0),
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.blueAccent),
-      borderRadius: BorderRadius.circular(12.0),
-    ),
-    child: Row(
-      children: [
-        Icon(Icons.location_on, color: Colors.blueAccent), // Location icon
-        SizedBox(width: 8.0), // Spacing between icon and text
-        Expanded( // Added Expanded
-          child: Text(
-            'Address: ${widget.display_Name}',
-            style: TextStyle(
-              fontSize: 16.0,
-            ),
-            softWrap: true, // Wrap the text
-          ),
-        ),
-      ],
-    ),
-  ),
+//           Padding(
+//   padding: const EdgeInsets.all(16.0),
+//   child: Container(
+//     padding: EdgeInsets.all(8.0),
+//     decoration: BoxDecoration(
+//       border: Border.all(color: Colors.blueAccent),
+//       borderRadius: BorderRadius.circular(12.0),
+//     ),
+//     child: Row(
+//       children: [
+//         Icon(Icons.location_on, color: Colors.blueAccent), // Location icon
+//         SizedBox(width: 8.0), // Spacing between icon and text
+//         Expanded( // Added Expanded
+//           child: Text(
+//             'Address: ${widget.display_Name}',
+//             style: TextStyle(
+//               fontSize: 16.0,
+//             ),
+//             softWrap: true, // Wrap the text
+//           ),
+//         ),
+//       ],
+//     ),
+//   ),
+// ),
+Row(
+  children: <Widget>[
+    SizedBox(width: 5.0),  // Optional: to give some spacing between the icon and text
+    Image.asset('assets/beauty.png', height: 24, width: 24),  // Adjust height and width accordingly
+    Text('Personal grooming', style: TextStyle(fontSize: 24.0)),
+  ],
 ),
+
           // Search Bar
           Padding(
             padding: const EdgeInsets.all(16.0),

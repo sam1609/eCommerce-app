@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'main.dart';
 // import 'NavigationBarPage5.dart';
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'API.dart';
 class NavigationBarPage1 extends StatefulWidget { 
   final String title;
+  final String phno;
   // ignore: non_constant_identifier_names
   final String? display_Name;
 
   // ignore: non_constant_identifier_names
-  const NavigationBarPage1({super.key, required this.title, this.display_Name});
+  const NavigationBarPage1({super.key, required this.title,required this.phno, this.display_Name});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -372,7 +374,7 @@ Widget _infoText(String text) {
       body: ListView(
         padding: EdgeInsets.only(top: 40.0), // Add padding at the top
         children: [
-          Padding(
+         Padding(
   padding: const EdgeInsets.all(16.0),
   child: Container(
     padding: EdgeInsets.all(8.0),
@@ -382,21 +384,71 @@ Widget _infoText(String text) {
     ),
     child: Row(
       children: [
-        Icon(Icons.location_on, color: Colors.blueAccent), // Location icon
-        SizedBox(width: 8.0), // Spacing between icon and text
-        Expanded( // Added Expanded
-          child: Text(
-            'Address: ${widget.display_Name}',
-            style: TextStyle(
-              fontSize: 16.0,
+        Expanded(
+          flex: 9,  // 90% space for address
+          child: Row(
+            children: [
+              Icon(Icons.location_on, color: Colors.blueAccent), // Location icon
+              SizedBox(width: 8.0), // Spacing between icon and text
+              Expanded(
+                child: Text(
+                  'Address: ${widget.display_Name}',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                  softWrap: true, // Wrap the text
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          flex: 1,  // 10% space for profile icon and menu
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: PopupMenuButton<String>(
+              icon: Icon(Icons.account_circle, size: 30.0),  // Profile icon
+              onSelected: (value) {
+                if (value == 'Log Out') {
+                  Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+                }
+                if (value == 'Login') {
+                  Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+                }
+                // Handle other menu item taps if necessary
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(
+                  value: widget.phno,
+                  child: Text(widget.phno),
+                ),
+                // PopupMenuItem<String>(
+                //   value: 'Button 2',
+                //   child: Text('Button 2'),
+                // ),
+                // PopupMenuItem<String>(
+                //   value: 'Button 3',
+                //   child: Text('Button 3'),
+                // ),
+                PopupMenuItem<String>(
+                  value: 'Log Out',
+                  child: Text('Log Out'),
+                ),
+              ],
             ),
-            softWrap: true, // Wrap the text
           ),
         ),
       ],
     ),
   ),
 ),
+
           // Search Bar
           Padding(
             padding: const EdgeInsets.all(16.0),
